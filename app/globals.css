@@ -1,8 +1,22 @@
+/* =========================
+   DESIGN TOKENS
+   ========================= */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand colors */
+  --primary: #dc3545;      /* red (matches your theme) */
+  --primary-dark: #b02a37;
+  --muted: #6b7280;
+
+  /* UI */
+  --radius: 8px;
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.35s ease;
 }
 
+/* Dark mode support (optional, safe) */
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -10,18 +24,25 @@
   }
 }
 
+/* =========================
+   BASE RESET
+   ========================= */
 html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  scroll-behavior: smooth; /* ✨ smooth scroll */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI", Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* ✨ page fade-in */
+  animation: pageFade 0.4s ease-in;
 }
 
 * {
@@ -30,13 +51,795 @@ body {
   margin: 0;
 }
 
+/* =========================
+   LINKS & TEXT
+   ========================= */
 a {
   color: inherit;
   text-decoration: none;
+  transition: color var(--transition-fast);
 }
 
+a:hover {
+  color: var(--primary);
+}
+
+/* =========================
+   GLOBAL ANIMATIONS
+   ========================= */
+
+/* Page fade */
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Reusable hover lift */
+.hover-lift {
+  transition: transform var(--transition-medium),
+              box-shadow var(--transition-medium);
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+}
+
+/* =========================
+   BUTTON ENHANCEMENT
+   ========================= */
+button,
+.btn {
+  transition: transform var(--transition-fast),
+              box-shadow var(--transition-fast),
+              background-color var(--transition-fast);
+}
+
+button:active,
+.btn:active {
+  transform: scale(0.97);
+}
+
+/* =========================
+   BOOTSTRAP SAFETY
+   ========================= */
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;
   }
+}
+/* =========================
+   NAVBAR ANIMATIONS
+   ========================= */
+
+/* Header background & entrance */
+.header_section {
+  background-color: #ffffff;
+  animation: navFadeDown 0.5s ease;
+  position: relative;
+  z-index: 1000;
+}
+
+/* Navbar entrance animation */
+@keyframes navFadeDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Logo hover */
+.logo-hover {
+  transition: transform 0.3s ease;
+}
+
+.logo-hover:hover {
+  transform: scale(1.05);
+}
+
+/* Nav link animation */
+.nav-anim {
+  position: relative;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+/* Underline effect */
+.nav-anim::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 0;
+  height: 2px;
+  background-color: #dc3545;
+  transition: width 0.3s ease;
+}
+
+.nav-anim:hover::after {
+  width: 100%;
+}
+
+.nav-anim:hover {
+  color: #dc3545 !important;
+}
+/* =====================================
+   NAVBAR SAFE ANIMATION (THEME-PROOF)
+   ===================================== */
+
+/* nav link base */
+header.header_section .navbar-nav .nav-link {
+  transition: 
+    color 0.3s ease,
+    background-color 0.3s ease,
+    letter-spacing 0.3s ease,
+    transform 0.3s ease;
+  padding: 6px 12px;
+  border-radius: 4px;
+}
+
+/* hover effect (WORKS WITH ANY THEME) */
+header.header_section .navbar-nav .nav-link:hover {
+  color: #dc3545 !important;
+  background-color: rgba(220, 53, 69, 0.08);
+  letter-spacing: 0.5px;
+  transform: translateY(-2px);
+}
+/* ===============================
+   NAVBAR ATTRACTIVE BACKGROUND
+   =============================== */
+
+header.header_section {
+  background: linear-gradient(
+    90deg,
+    #c05858 0%,
+    #8c63df 50%,
+    #ecadad 100%
+  );
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+}
+/* HOME SLIDER CARDS */
+.home-card {
+  background: #022c3a;
+  color: #fff;
+  padding: 40px 25px;
+  border-radius: 14px;
+  text-align: center;
+  min-height: 200px;
+  transition: all 0.35s ease;
+}
+
+.home-card h5 {
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.home-card p {
+  font-size: 15px;
+  opacity: 0.9;
+}
+
+.home-card:hover {
+  transform: translateY(-8px);
+  background: linear-gradient(135deg, #ff4d4d, #8b5cf6);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ff4d4d;
+}
+/* ==============================
+   SHOP BY CATEGORY – SECTION
+   ============================== */
+
+.shop-category-section {
+  background: linear-gradient(135deg, #f8fafc, #eef2ff);
+  padding: 80px 0;
+}
+
+/* Card base */
+.home-card {
+  background: linear-gradient(135deg, #022c3a, #033b4a);
+  color: #ffffff;
+  padding: 50px 30px;
+  border-radius: 18px;
+  text-align: center;
+  min-height: 230px;
+  position: relative;
+  overflow: hidden;
+
+  transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Glow layer */
+.home-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    120deg,
+    rgba(255, 77, 77, 0.8),
+    rgba(139, 92, 246, 0.8)
+  );
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  z-index: 0;
+}
+
+/* Content stays above glow */
+.home-card * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Title */
+.home-card h5 {
+  font-size: 24px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+/* Text */
+.home-card p {
+  font-size: 15px;
+  opacity: 0.85;
+  transition: opacity 0.3s ease;
+}
+
+/* Hover effects */
+.home-card:hover {
+  transform: translateY(-14px) scale(1.03);
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.35);
+}
+
+.home-card:hover::before {
+  opacity: 1;
+}
+
+.home-card:hover p {
+  opacity: 1;
+}
+
+/* Swiper arrows */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #ff4d4d;
+  font-weight: bold;
+}
+
+.swiper-button-next:hover,
+.swiper-button-prev:hover {
+  transform: scale(1.15);
+}
+/* =========================
+   WHY SLIDER SECTION
+   ========================= */
+.why-slider-section {
+  padding: 80px 0;
+  background: linear-gradient(135deg, #f9fafb, #eef2f7);
+}
+
+/* Section heading */
+.why-slider-section h2 {
+  font-size: 42px;
+  font-weight: 700;
+  position: relative;
+  display: inline-block;
+}
+
+.why-slider-section h2::after {
+  content: "";
+  width: 70px;
+  height: 4px;
+  background: #dc3545;
+  display: block;
+  margin: 12px auto 0;
+  border-radius: 10px;
+}
+
+/* =========================
+   WHY CARD DESIGN
+   ========================= */
+.why-card {
+  background: linear-gradient(135deg, #012a3a, #023e56);
+  color: #ffffff;
+  padding: 40px 25px;
+  border-radius: 18px;
+  text-align: center;
+  min-height: 200px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  transition: all 0.4s ease;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Title */
+.why-card h5 {
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+/* Text */
+.why-card p {
+  font-size: 15px;
+  opacity: 0.9;
+  line-height: 1.6;
+}
+
+/* =========================
+   HOVER EFFECT (🔥 IMPORTANT)
+   ========================= */
+.why-card:hover {
+  transform: translateY(-12px) scale(1.04);
+  background: linear-gradient(135deg, #dc3545, #ff6b6b);
+  box-shadow: 0 22px 50px rgba(220, 53, 69, 0.45);
+}
+
+/* =========================
+   SWIPER ARROWS
+   ========================= */
+.why-slider-section .swiper-button-next,
+.why-slider-section .swiper-button-prev {
+  color: #dc3545;
+  font-weight: bold;
+}
+
+.why-slider-section .swiper-button-next:hover,
+.why-slider-section .swiper-button-prev:hover {
+  color: #b02a37;
+}
+
+/* =========================
+   MOBILE IMPROVEMENTS
+   ========================= */
+@media (max-width: 768px) {
+  .why-slider-section h2 {
+    font-size: 32px;
+  }
+
+  .why-card {
+    padding: 30px 20px;
+  }
+}
+.arrival_section {
+  position: relative;
+}
+
+.arrival_bg_box {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none; /* 🔥 THIS FIXES CLICK */
+}
+
+.arrival_section .container {
+  position: relative;
+  z-index: 2; /* content above bg */
+}
+
+.arrival_section .btn1 {
+  cursor: pointer;
+}
+/* ===============================
+   MULTI LEVEL DROPDOWN – FIXED
+   =============================== */
+
+/* remove bullets strictly for dropdown */
+.dropdown-menu-hover,
+.dropdown-menu-hover ul,
+.dropdown-menu-hover li {
+  list-style: none !important;
+  margin: 0;
+  padding: 0;
+}
+
+/* parent */
+.dropdown-hover {
+  position: relative;
+}
+
+/* MAIN DROPDOWN */
+.dropdown-menu-hover {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;                /* 🔥 FIX ALIGNMENT */
+  min-width: 260px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(234, 7, 7, 0.15);
+  z-index: 9999;
+}
+
+/* show main dropdown */
+.dropdown-hover:hover > .dropdown-menu-hover {
+  display: block;
+}
+
+/* SUBMENU */
+.submenu-hover {
+  position: relative;
+}
+
+/* RIGHT SIDE SUBMENU */
+.dropdown-menu-hover.right {
+  top: 0;
+  left: 100%;
+}
+
+/* show submenu */
+.submenu-hover:hover > .dropdown-menu-hover {
+  display: block;
+}
+
+/* ITEMS */
+.dropdown-item {
+  display: block;
+  padding: 10px 16px;
+  font-size: 15px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+/* hover */
+.dropdown-item:hover {
+  background: #f8f9fa;
+  color: var(--primary);
+}
+
+/* arrow only if submenu exists */
+.submenu-hover > .dropdown-item::after {
+  content: "›";
+  float: right;
+  opacity: 0.6;
+}
+/* =========================
+   FOOTER
+   ========================= */
+
+.footer {
+  background: linear-gradient(90deg, #c05858, #8c63df, #ecadad);
+  color: #fff;
+  padding: 60px 0 20px;
+  margin-top: 80px;
+}
+
+.footer-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.footer-text {
+  font-size: 14px;
+  opacity: 0.9;
+}
+
+.footer-links {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  color: #fff;
+  font-size: 14px;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.footer-links a:hover {
+  opacity: 1;
+  padding-left: 6px;
+}
+
+.footer-social a {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 18px;
+  transition: transform 0.3s ease;
+}
+
+.footer-social a:hover {
+  transform: scale(1.2);
+}
+
+.footer-bottom {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 13px;
+  opacity: 0.85;
+  border-top: 1px solid rgba(255,255,255,0.3);
+  padding-top: 15px;
+}
+.user-dropdown {
+  position: relative;
+}
+
+.user-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: #fff;
+  min-width: 180px;
+  box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+  border-radius: 6px;
+  padding: 6px 0;
+  display: none;
+  z-index: 1000;
+}
+
+.user-dropdown:hover .user-dropdown-menu {
+  display: block;
+}
+
+.user-dropdown-menu .dropdown-item {
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.user-dropdown-menu .dropdown-item:hover {
+  background: #f5f5f5;
+}
+/* =========================
+   USER DROPDOWN – OVERRIDE (SAFE)
+   ========================= */
+
+/* Override old dropdown container */
+.user-dropdown-menu {
+  background: linear-gradient(135deg, #ffffff, #f3f4ff) !important;
+  border: none !important;
+  box-shadow: none !important;
+
+  border-radius: 14px !important;
+  padding: 10px 0 !important;
+  min-width: 220px !important;
+}
+
+/* Override items */
+.user-dropdown-menu .dropdown-item,
+.user-dropdown-menu a,
+.user-dropdown-menu button {
+  font-size: 15px !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+  background: transparent !important;
+
+  padding: 12px 18px !important;
+  transition: all 0.3s ease !important;
+}
+
+/* Hover effect */
+.user-dropdown-menu .dropdown-item:hover,
+.user-dropdown-menu a:hover,
+.user-dropdown-menu button:hover {
+  background: linear-gradient(90deg, #8c63df, #ecadad) !important;
+  color: #ffffff !important;
+  transform: translateX(6px);
+}
+
+/* Divider override */
+.user-dropdown-menu .dropdown-divider {
+  background: rgba(0, 0, 0, 0.08) !important;
+  margin: 6px 14px !important;
+}
+
+/* Logout button special hover */
+.user-dropdown-menu button.text-danger {
+  color: #dc3545 !important;
+}
+
+.user-dropdown-menu button.text-danger:hover {
+  background: linear-gradient(90deg, #dc3545, #ff6b6b) !important;
+  color: #fff !important;
+}
+
+/* Username pill override */
+.user-dropdown > span {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-radius: 20px !important;
+  padding: 6px 16px !important;
+}
+
+.user-dropdown > span:hover {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+/* =========================
+   REMOVE WHITE DROPDOWN BOX
+   ========================= */
+
+/* Make dropdown container transparent */
+.user-dropdown-menu {
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 6px 0 !important;
+}
+
+/* Each item becomes its own pill */
+.user-dropdown-menu li {
+  margin: 6px 0 !important;
+}
+
+/* Item base style */
+.user-dropdown-menu a,
+.user-dropdown-menu button {
+  background: transparent !important;
+  border-radius: 12px !important;
+}
+
+/* Hover = colorful pill */
+.user-dropdown-menu a:hover,
+.user-dropdown-menu button:hover {
+  background: linear-gradient(90deg, #8c63df, #ecadad) !important;
+  color: #fff !important;
+  transform: translateX(6px);
+}
+
+/* Divider lighter & floating */
+.user-dropdown-menu .dropdown-divider {
+  background: rgba(0, 0, 0, 0.1) !important;
+  margin: 8px 16px !important;
+}
+/* =========================
+   USER DROPDOWN – CLEAN LIST
+   ========================= */
+
+/* Remove bullets completely */
+.user-dropdown-menu,
+.user-dropdown-menu li {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Reduce vertical spacing */
+.user-dropdown-menu a,
+.user-dropdown-menu button {
+  padding: 8px 16px !important;   /* 🔽 tighter spacing */
+  margin: 2px 0 !important;
+  font-size: 14px !important;
+}
+
+/* Keep hover nice but compact */
+.user-dropdown-menu a:hover,
+.user-dropdown-menu button:hover {
+  transform: translateX(4px);
+}
+
+/* Divider tighter */
+.user-dropdown-menu .dropdown-divider {
+  margin: 6px 14px !important;
+}
+/* =========================
+   FORCE FIXED NAVBAR (FINAL)
+   ========================= */
+
+header.header_section {
+  position: fixed !important;   /* 🔥 force override */
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 9999;
+
+  background: linear-gradient(
+    90deg,
+    #c05858 0%,
+    #8c63df 50%,
+    #ecadad 100%
+  );
+
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+/* Push content below fixed navbar */
+body {
+  padding-top: 90px;
+}
+
+/* ===============================
+   STABLE HOVER DROPDOWN (FIX)
+   =============================== */
+
+/* Parent */
+.dropdown-hover {
+  position: relative;
+}
+
+/* Main dropdown */
+.dropdown-hover > .dropdown-menu-hover {
+  display: block;                 /* keep in DOM */
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  position: absolute;
+  top: 100%;
+  left: 0;
+
+  min-width: 260px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+  z-index: 9999;
+}
+
+/* Show dropdown when hovering parent OR dropdown */
+.dropdown-hover:hover > .dropdown-menu-hover,
+.dropdown-hover > .dropdown-menu-hover:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Invisible hover bridge (VERY IMPORTANT) */
+.dropdown-hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  height: 12px;     /* hover gap buffer */
+}
+/* ===============================
+   SUBMENU STABILITY FIX
+   =============================== */
+
+.submenu-hover {
+  position: relative;
+}
+
+.submenu-hover > .dropdown-menu-hover {
+  display: block;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+
+  position: absolute;
+  top: 0;
+  left: 100%;
+
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+/* Show submenu */
+.submenu-hover:hover > .dropdown-menu-hover,
+.submenu-hover > .dropdown-menu-hover:hover {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+/* Submenu hover bridge */
+.submenu-hover::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -12px;
+  width: 12px;
+  height: 100%;
+}
+.dropdown-menu-hover {
+  display: none;
 }

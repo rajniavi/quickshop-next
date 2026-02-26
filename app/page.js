@@ -1,66 +1,64 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
+import Script from "next/script";
+import Hero from "./components/Hero";
+import ProductsSection from "./components/ProductsSection";
+import Chatbot from "./components/Chatbot";
+import HomeCardSlider from "./components/HomeCardSlider";
+import WhySlider from "./components/WhySlider";
+import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      {/* HERO / SLIDER */}
+      <Hero />
+
+      {/* WHY SHOP WITH US – SLIDER */}
+      <WhySlider />
+
+      {/* ARRIVAL / CTA SECTION */}
+      <section className="arrival_section">
+        <div className="container">
+          <div className="box">
+            <div className="arrival_bg_box">
+              <img src="/images/arrival-bg.png" alt="arrival" />
+            </div>
+
+            <div className="row">
+              <div className="col-md-6 ml-auto">
+                <div className="heading_container remove_line_bt">
+                  <h2>#NewArrivals</h2>
+                </div>
+
+                <p>
+                  Discover the latest fashion arrivals at unbeatable prices.
+                </p>
+
+                {/* ✅ FIXED: Link instead of <a> */}
+                <Link href="/product" className="btn1">
+                  Shop Now
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      {/* SHOP BY CATEGORY – SLIDER */}
+      <HomeCardSlider />
+
+      {/* PRODUCTS SECTION */}
+      <ProductsSection />
+
+
+    
+
+      <Chatbot />
+
+      {/* Bootstrap scripts */}
+      <Script src="/js/jquery-3.4.1.min.js" strategy="beforeInteractive" />
+      <Script src="/js/popper.min.js" strategy="beforeInteractive" />
+      <Script src="/js/bootstrap.js" strategy="afterInteractive" />
+    </>
   );
 }
