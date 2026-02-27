@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { pool } from "@/lib/db";
 
+// 🔥 IMPORTANT: Prevent execution during build time
+export const dynamic = "force-dynamic";
+
 export async function GET() {
   try {
     const conn = await pool.getConnection();
@@ -49,7 +52,7 @@ export async function GET() {
       ) t
     `);
 
-    // 🔥 4️⃣ STATUS DISTRIBUTION (NEW STEP 1 FEATURE)
+    // 4️⃣ Status distribution
     const [statusRows] = await conn.query(`
       SELECT status, COUNT(*) as count
       FROM orders
@@ -59,18 +62,18 @@ export async function GET() {
 
     conn.release();
 
-    // Convert status numbers → percentage text
     const statusInsight = statusRows.map(row => {
-      const percent = ((row.count / currentCount) * 100).toFixed(0);
+      const percent = currentCount > 0
+        ? ((row.count / currentCount) * 100).toFixed(0)
+        : 0;
       return `${percent}% orders are ${row.status}`;
     });
 
-    // 🧠 Final insights array
     const insight = [
       growthText,
       `This week’s revenue is ₹${revenueResult[0].revenue}`,
       `${repeatCustomers[0].repeatCount} repeat customers placed multiple orders this week`,
-      ...statusInsight // 👈 status insights added
+      ...statusInsight
     ];
 
     return NextResponse.json({
@@ -78,6 +81,7 @@ export async function GET() {
       insight,
       source: "database",
     });
+
   } catch (error) {
     console.error("INSIGHT ERROR:", error);
     return NextResponse.json(
