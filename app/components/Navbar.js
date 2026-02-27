@@ -182,198 +182,109 @@ import { useAuth } from "../context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 
-/* build category tree */
-function buildCategoryTree(categories) {
-  const map = {};
-  const tree = [];
-
-  categories.forEach((cat) => {
-    map[cat.category_id] = { ...cat, children: [] };
-  });
-
-  categories.forEach((cat) => {
-    if (cat.parent_id === null) {
-      tree.push(map[cat.category_id]);
-    } else if (map[cat.parent_id]) {
-      map[cat.parent_id].children.push(map[cat.category_id]);
-    }
-  });
-
-  return tree;
-}
-
 export default function Navbar() {
   const { user, logout } = useAuth();
   const router = useRouter();
 
   const [categories, setCategories] = useState([]);
-  const [productsOpen, setProductsOpen] = useState(false);
-
-  const productsRef = useRef(null);
+  const [open, setOpen] = useState(false);
+  const navRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     router.push("/login");
   };
 
-  /* fetch categories */
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          setCategories(buildCategoryTree(data.categories));
+          // ✅ ONLY TOP LEVEL CATEGORIES
+          setCategories(data.categories.filter(c => c.parent_id === null));
         }
-      })
-      .catch(console.error);
+      });
   }, []);
 
-  /* close products dropdown when clicking outside */
   useEffect(() => {
-    function handleClickOutside(e) {
-      if (productsRef.current && !productsRef.current.contains(e.target)) {
-        setProductsOpen(false);
+    const close = (e) => {
+      if (navRef.current && !navRef.current.contains(e.target)) {
+        setOpen(false);
       }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    };
+    document.addEventListener("mousedown", close);
+    return () => document.removeEventListener("mousedown", close);
   }, []);
 
   return (
     <header className="header_section">
       <div className="container">
-        <nav className="navbar navbar-expand-lg custom_nav-container">
+        <nav className="navbar">
           {/* LOGO */}
-          <Link className="navbar-brand" href="/">
-            <img src="/images/logo.png" alt="logo" style={{ height: 48 }} />
+          <Link href="/" className="navbar-brand">
+            <img src="/images/logo.png" alt="logo" height={48} />
           </Link>
 
-          <ul className="navbar-nav ms-auto">
-            {/* HOME */}
-            <li className="nav-item">
-              <Link className="nav-link nav-anim" href="/">
-                Home
-              </Link>
-            </li>
+          {/* NAV LINKS */}
+          <ul className="nav-links">
+            <li><Link href="/">Home</Link></li>
 
-            {/* PRODUCTS – STABLE CLICK DROPDOWN */}
-            <li
-              className="nav-item dropdown-hover"
-              ref={productsRef}
-            >
+            {/* PRODUCTS */}
+            <li className="nav-item dropdown" ref={navRef}>
               <button
                 type="button"
-                className="nav-link nav-anim"
-                style={{ background: "none", border: "none" }}
-                onClick={() => setProductsOpen((prev) => !prev)}
+                className="dropdown-btn"
+                onClick={() => setOpen(!open)}
               >
                 Products ▾
               </button>
 
-              {productsOpen && (
-                <ul className="dropdown-menu-hover">
+              {open && (
+                <ul className="dropdown-menu">
                   <li>
-                    <Link
-                      href="/product"
-                      className="dropdown-item fw-bold"
-                      onClick={() => setProductsOpen(false)}
-                    >
-                      All Products
+                    <Link href="/product" onClick={() => setOpen(false)}>
+                      <strong>All Products</strong>
                     </Link>
                   </li>
 
-                  <li className="dropdown-divider"></li>
+                  <li className="divider" />
 
                   {categories.map((cat) => (
-                    <li key={cat.category_id} className="submenu-hover">
-                      <span className="dropdown-item fw-bold">
+                    <li key={cat.category_id}>
+                      <Link
+                        href={`/category/${cat.category_id}`}
+                        onClick={() => setOpen(false)}
+                      >
                         {cat.category_name}
-                      </span>
-
-                      {cat.children.length > 0 && (
-                        <ul className="dropdown-menu-hover right">
-                          {cat.children.map((sub) => (
-                            <li key={sub.category_id}>
-                              <Link
-                                href={`/category/${sub.category_id}`}
-                                className="dropdown-item"
-                                onClick={() => setProductsOpen(false)}
-                              >
-                                {sub.category_name}
-                              </Link>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
+                      </Link>
                     </li>
                   ))}
                 </ul>
               )}
             </li>
 
-            {/* BLOG */}
-            <li className="nav-item">
-              <Link className="nav-link nav-anim" href="/blog">
-                Blog
-              </Link>
-            </li>
+            <li><Link href="/blog">Blog</Link></li>
+            <li><Link href="/contact">Contact</Link></li>
 
-            {/* CONTACT */}
-            <li className="nav-item">
-              <Link className="nav-link nav-anim" href="/contact">
-                Contact
-              </Link>
-            </li>
-
-            {/* AUTH */}
             {!user ? (
-              <li className="nav-item">
-                <Link className="nav-link nav-anim fw-bold" href="/login">
-                  Login
-                </Link>
-              </li>
+              <li><Link href="/login"><strong>Login</strong></Link></li>
             ) : (
-              <li className="nav-item user-dropdown">
-                <span className="nav-link nav-anim fw-bold">
-                  Hi, {user.name || user.full_name || user.email}
+              <li className="nav-item dropdown user">
+                <span className="dropdown-btn">
+                  Hi, {user.full_name || user.email}
                 </span>
 
-                <ul className="user-dropdown-menu">
-                  <li>
-                    <Link href="/order" className="dropdown-item">
-                      My Orders
-                    </Link>
-                  </li>
+                <ul className="dropdown-menu">
+                  <li><Link href="/order">My Orders</Link></li>
+                  <li><Link href="/profile">My Profile</Link></li>
 
-                  <li>
-                    <Link href="/profile" className="dropdown-item">
-                      My Profile
-                    </Link>
-                  </li>
-
-                  {/* ADMIN DASHBOARD */}
-                  {user?.role === "ADMIN" && (
-                    <>
-                      <li className="dropdown-divider"></li>
-                      <li>
-                        <Link
-                          href="/admin"
-                          className="dropdown-item fw-bold"
-                        >
-                          Admin Dashboard
-                        </Link>
-                      </li>
-                    </>
+                  {user.role === "ADMIN" && (
+                    <li><Link href="/admin"><strong>Admin</strong></Link></li>
                   )}
 
-                  <li className="dropdown-divider"></li>
-
+                  <li className="divider" />
                   <li>
-                    <button
-                      className="dropdown-item text-danger"
-                      onClick={handleLogout}
-                    >
+                    <button onClick={handleLogout} className="logout-btn">
                       Logout
                     </button>
                   </li>
