@@ -187,113 +187,180 @@ export default function Navbar() {
   const router = useRouter();
 
   const [categories, setCategories] = useState([]);
-  const [open, setOpen] = useState(false);
-  const navRef = useRef(null);
+  const [productOpen, setProductOpen] = useState(false);
+  const [userOpen, setUserOpen] = useState(false);
+
+  const productRef = useRef(null);
+  const userRef = useRef(null);
 
   const handleLogout = () => {
     logout();
     router.push("/login");
   };
 
+  /* Fetch Categories */
   useEffect(() => {
     fetch("/api/categories")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          // ✅ ONLY TOP LEVEL CATEGORIES
-          setCategories(data.categories.filter(c => c.parent_id === null));
+          setCategories(
+            data.categories.filter((c) => c.parent_id === null)
+          );
         }
       });
   }, []);
 
+  /* Close dropdown on outside click */
   useEffect(() => {
     const close = (e) => {
-      if (navRef.current && !navRef.current.contains(e.target)) {
-        setOpen(false);
+      if (
+        productRef.current &&
+        !productRef.current.contains(e.target)
+      ) {
+        setProductOpen(false);
+      }
+
+      if (
+        userRef.current &&
+        !userRef.current.contains(e.target)
+      ) {
+        setUserOpen(false);
       }
     };
+
     document.addEventListener("mousedown", close);
     return () => document.removeEventListener("mousedown", close);
   }, []);
 
   return (
     <header className="header_section">
-      <div className="container">
-        <nav className="navbar">
-          {/* LOGO */}
-          <Link href="/" className="navbar-brand">
-            <img src="/images/logo.png" alt="logo" height={48} />
-          </Link>
+      <nav className="navbar">
+        {/* LOGO */}
+        <Link href="/" className="navbar-brand">
+          <img src="/images/logo.png" alt="logo" height={48} />
+        </Link>
 
-          {/* NAV LINKS */}
-          <ul className="nav-links">
-            <li><Link href="/">Home</Link></li>
+        {/* NAV LINKS */}
+        <ul className="nav-links">
+          <li>
+            <Link href="/">Home</Link>
+          </li>
 
-            {/* PRODUCTS */}
-            <li className="nav-item dropdown" ref={navRef}>
+          {/* PRODUCTS DROPDOWN */}
+          <li className="dropdown" ref={productRef}>
+            <button
+              type="button"
+              className="dropdown-btn"
+              onClick={() => {
+                setProductOpen(!productOpen);
+                setUserOpen(false);
+              }}
+            >
+              Products ▾
+            </button>
+
+            {productOpen && (
+              <ul className="dropdown-menu">
+                <li>
+                  <Link
+                    href="/product"
+                    onClick={() => setProductOpen(false)}
+                  >
+                    <strong>All Products</strong>
+                  </Link>
+                </li>
+
+                <li className="divider" />
+
+                {categories.map((cat) => (
+                  <li key={cat.category_id}>
+                    <Link
+                      href={`/category/${cat.category_id}`}
+                      onClick={() => setProductOpen(false)}
+                    >
+                      {cat.category_name}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </li>
+
+          <li>
+            <Link href="/blog">Blog</Link>
+          </li>
+
+          <li>
+            <Link href="/contact">Contact</Link>
+          </li>
+
+          {/* USER DROPDOWN */}
+          {!user ? (
+            <li>
+              <Link href="/login">
+                <strong>Login</strong>
+              </Link>
+            </li>
+          ) : (
+            <li className="dropdown" ref={userRef}>
               <button
                 type="button"
                 className="dropdown-btn"
-                onClick={() => setOpen(!open)}
+                onClick={() => {
+                  setUserOpen(!userOpen);
+                  setProductOpen(false);
+                }}
               >
-                Products ▾
+                Hi, {user.full_name || user.email} ▾
               </button>
 
-              {open && (
+              {userOpen && (
                 <ul className="dropdown-menu">
                   <li>
-                    <Link href="/product" onClick={() => setOpen(false)}>
-                      <strong>All Products</strong>
+                    <Link
+                      href="/order"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      My Orders
                     </Link>
                   </li>
 
-                  <li className="divider" />
-
-                  {categories.map((cat) => (
-                    <li key={cat.category_id}>
-                      <Link
-                        href={`/category/${cat.category_id}`}
-                        onClick={() => setOpen(false)}
-                      >
-                        {cat.category_name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </li>
-
-            <li><Link href="/blog">Blog</Link></li>
-            <li><Link href="/contact">Contact</Link></li>
-
-            {!user ? (
-              <li><Link href="/login"><strong>Login</strong></Link></li>
-            ) : (
-              <li className="nav-item dropdown user">
-                <span className="dropdown-btn">
-                  Hi, {user.full_name || user.email}
-                </span>
-
-                <ul className="dropdown-menu">
-                  <li><Link href="/order">My Orders</Link></li>
-                  <li><Link href="/profile">My Profile</Link></li>
+                  <li>
+                    <Link
+                      href="/profile"
+                      onClick={() => setUserOpen(false)}
+                    >
+                      My Profile
+                    </Link>
+                  </li>
 
                   {user.role === "ADMIN" && (
-                    <li><Link href="/admin"><strong>Admin</strong></Link></li>
+                    <li>
+                      <Link
+                        href="/admin"
+                        onClick={() => setUserOpen(false)}
+                      >
+                        <strong>Admin Dashboard</strong>
+                      </Link>
+                    </li>
                   )}
 
                   <li className="divider" />
+
                   <li>
-                    <button onClick={handleLogout} className="logout-btn">
+                    <button
+                      onClick={handleLogout}
+                    >
                       Logout
                     </button>
                   </li>
                 </ul>
-              </li>
-            )}
-          </ul>
-        </nav>
-      </div>
+              )}
+            </li>
+          )}
+        </ul>
+      </nav>
     </header>
   );
 }
