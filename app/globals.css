@@ -4,21 +4,7 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
-
   --primary: #dc3545;
-  --primary-dark: #b02a37;
-  --muted: #6b7280;
-
-  --radius: 8px;
-  --transition-fast: 0.2s ease;
-  --transition-medium: 0.35s ease;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
 }
 
 /* =========================
@@ -38,34 +24,22 @@ body {
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
   font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  animation: pageFade 0.4s ease-in;
-
-  padding-top: 90px; /* space for fixed navbar */
+  background: var(--background);
+  color: var(--foreground);
+  padding-top: 90px;
 }
 
 /* =========================
-   GLOBAL LINKS
+   LINKS
 ========================= */
 a {
   text-decoration: none;
   color: inherit;
-  transition: color var(--transition-fast);
 }
 
 a:hover {
   color: var(--primary);
-}
-
-/* =========================
-   ANIMATIONS
-========================= */
-@keyframes pageFade {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
 }
 
 /* =========================
@@ -77,113 +51,135 @@ header.header_section {
   left: 0;
   width: 100%;
   z-index: 9999;
-
-  overflow: visible; /* IMPORTANT */
-
-  background: linear-gradient(
-    90deg,
-    #c05858 0%,
-    #8c63df 50%,
-    #ecadad 100%
-  );
-
+  overflow: visible;
+  background: linear-gradient(90deg, #c05858 0%, #8c63df 50%, #ecadad 100%);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* =========================
-   NAVBAR STRUCTURE
-========================= */
+/* IMPORTANT */
 .navbar {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 15px 40px;
-
   position: relative;
-  overflow: visible; /* IMPORTANT */
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 28px;
-  list-style: none;
-}
-
-.nav-links li {
-  position: relative;
-}
-
-.dropdown {
-  position: relative;
-}
-
-/* Button */
-.dropdown-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  font-weight: 500;
-  cursor: pointer;
-  font-size: 15px;
-  padding: 6px 4px;
+  overflow: visible;
 }
 
 /* =========================
-   DROPDOWN MENU
+   MULTI LEVEL DROPDOWN
 ========================= */
-.dropdown-menu {
-  position: absolute;
-  top: 130%;
-  left: 0;
 
-  background: #ffffff;
-  border-radius: 12px;
-  min-width: 220px;
-
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.18);
-
-  padding: 10px 0;
+/* remove bullets */
+.dropdown-menu-hover,
+.dropdown-menu-hover ul,
+.dropdown-menu-hover li {
   list-style: none;
-
-  z-index: 100000; /* VERY HIGH */
-  animation: dropdownFade 0.2s ease;
+  margin: 0;
+  padding: 0;
 }
 
-/* Dropdown items */
-.dropdown-menu li {
-  padding: 8px 18px;
+/* parent */
+.dropdown-hover {
+  position: relative;
 }
 
-.dropdown-menu li a,
-.dropdown-menu li button {
-  display: block;
+/* 🔥 hover bridge fix */
+.dropdown-hover::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 100%;
   width: 100%;
+  height: 20px;
+}
+
+/* main dropdown */
+.dropdown-menu-hover {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  min-width: 240px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  z-index: 100000;
+}
+
+/* show dropdown */
+.dropdown-hover:hover > .dropdown-menu-hover {
+  display: block;
+}
+
+/* submenu */
+.submenu-hover {
+  position: relative;
+}
+
+/* right side submenu */
+.dropdown-menu-hover.right {
+  top: 0;
+  left: 100%;
+}
+
+/* show submenu */
+.submenu-hover:hover > .dropdown-menu-hover {
+  display: block;
+}
+
+/* dropdown items */
+.dropdown-item {
+  display: block;
+  padding: 8px 16px;
   font-size: 14px;
   color: #333;
-  background: transparent;
-  border: none;
-  text-align: left;
+  white-space: nowrap;
   cursor: pointer;
-  transition: all 0.25s ease;
 }
 
-.dropdown-menu li a:hover,
-.dropdown-menu li button:hover {
-  background: linear-gradient(90deg, #8c63df, #ecadad);
-  color: white;
-  border-radius: 6px;
+.dropdown-item:hover {
+  background: #f5f5f5;
+  color: var(--primary);
 }
 
-.dropdown-menu .divider {
+/* divider */
+.dropdown-divider {
   height: 1px;
   background: #eee;
   margin: 6px 12px;
 }
 
-@keyframes dropdownFade {
-  from { opacity: 0; transform: translateY(-6px); }
-  to { opacity: 1; transform: translateY(0); }
+/* =========================
+   USER DROPDOWN
+========================= */
+
+.user-dropdown {
+  position: relative;
+}
+
+/* hover bridge */
+.user-dropdown::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 100%;
+  width: 100%;
+  height: 20px;
+}
+
+.user-dropdown-menu {
+  display: none;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 200px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+  padding: 8px 0;
+  z-index: 100000;
+}
+
+.user-dropdown:hover .user-dropdown-menu {
+  display: block;
 }
 
 /* =========================
@@ -257,12 +253,6 @@ header.header_section {
   margin-top: 80px;
 }
 
-.footer-title {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
 .footer-links {
   list-style: none;
 }
@@ -271,21 +261,11 @@ header.header_section {
   margin-bottom: 8px;
 }
 
-.footer-links a {
-  color: #fff;
-  font-size: 14px;
-  transition: 0.3s ease;
-}
-
-.footer-links a:hover {
-  padding-left: 6px;
-}
-
 .footer-bottom {
   text-align: center;
   margin-top: 30px;
   font-size: 13px;
   opacity: 0.85;
-  border-top: 1px solid rgba(255,255,255,0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   padding-top: 15px;
 }
